@@ -1,0 +1,37 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary Files
+*.tmp
+*.bak
+*.cache
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment Variables
+.env
+.env.local
+
+# Build Output (for future use)
+dist/
+build/
+
+# Dependencies (for future use)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Personal Notes
+notes.txt
+todo.txt
