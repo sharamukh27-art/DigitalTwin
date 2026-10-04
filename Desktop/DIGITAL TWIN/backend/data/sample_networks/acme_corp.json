@@ -1,0 +1,1408 @@
+{
+  "network": {
+    "name": "ACME Corp",
+    "description": "Sample mid-size company network: DMZ, corporate LAN, server zone, management and guest Wi-Fi."
+  },
+  "assets": [
+    {
+      "code": "INTERNET",
+      "name": "Internet (external attacker)",
+      "type": "attacker_node",
+      "ip": "203.0.113.10",
+      "mac": "02:00:00:00:00:01",
+      "os": "Kali Linux",
+      "os_version": "2024.4",
+      "vlan": null,
+      "zone": "internet",
+      "open_ports": [],
+      "criticality": 1,
+      "owner": "External",
+      "tags": [
+        "external",
+        "untrusted"
+      ],
+      "known_cves": [],
+      "data_classification": "public"
+    },
+    {
+      "code": "FW-EDGE",
+      "name": "Edge firewall",
+      "type": "firewall",
+      "ip": "172.16.1.1",
+      "mac": "02:00:00:00:00:02",
+      "os": "FortiOS",
+      "os_version": "7.4.3",
+      "vlan": null,
+      "zone": "dmz",
+      "open_ports": [
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "https-admin",
+          "version": "FortiOS 7.4.3"
+        }
+      ],
+      "criticality": 4,
+      "owner": "Network Team",
+      "tags": [
+        "perimeter"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WEB-01",
+      "name": "Public web server",
+      "type": "web_server",
+      "ip": "172.16.1.10",
+      "mac": "02:00:00:00:00:03",
+      "os": "Ubuntu",
+      "os_version": "22.04",
+      "vlan": null,
+      "zone": "dmz",
+      "open_ports": [
+        {
+          "port": 80,
+          "protocol": "tcp",
+          "service": "http",
+          "version": "nginx 1.18.0"
+        },
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "https",
+          "version": "nginx 1.18.0"
+        }
+      ],
+      "criticality": 3,
+      "owner": "Web Team",
+      "tags": [
+        "public-facing",
+        "nginx"
+      ],
+      "known_cves": [
+        {
+          "id": "CVE-2021-23017",
+          "cvss": 7.5,
+          "description": "nginx resolver off-by-one allows memory corruption via crafted DNS response."
+        }
+      ],
+      "data_classification": "public"
+    },
+    {
+      "code": "VPN-01",
+      "name": "Remote access VPN gateway",
+      "type": "vpn_gateway",
+      "ip": "172.16.1.20",
+      "mac": "02:00:00:00:00:04",
+      "os": "OpenVPN Access Server",
+      "os_version": "2.12",
+      "vlan": null,
+      "zone": "dmz",
+      "open_ports": [
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "openvpn",
+          "version": "OpenVPN AS 2.12"
+        }
+      ],
+      "criticality": 4,
+      "owner": "Network Team",
+      "tags": [
+        "remote-access",
+        "public-facing"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "FW-INT",
+      "name": "Internal firewall",
+      "type": "firewall",
+      "ip": "10.0.99.1",
+      "mac": "02:00:00:00:00:05",
+      "os": "FortiOS",
+      "os_version": "7.4.3",
+      "vlan": 99,
+      "zone": "management",
+      "open_ports": [
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "https-admin",
+          "version": "FortiOS 7.4.3"
+        }
+      ],
+      "criticality": 4,
+      "owner": "Network Team",
+      "tags": [
+        "segmentation"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "SW-CORE",
+      "name": "Core switch",
+      "type": "switch",
+      "ip": "10.0.99.2",
+      "mac": "02:00:00:00:00:06",
+      "os": "Cisco IOS XE",
+      "os_version": "17.9",
+      "vlan": 99,
+      "zone": "management",
+      "open_ports": [
+        {
+          "port": 22,
+          "protocol": "tcp",
+          "service": "ssh",
+          "version": "OpenSSH 8.4"
+        }
+      ],
+      "criticality": 4,
+      "owner": "Network Team",
+      "tags": [
+        "core"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "SW-ACCESS-1",
+      "name": "Access switch floor 1",
+      "type": "switch",
+      "ip": "10.0.99.11",
+      "mac": "02:00:00:00:00:07",
+      "os": "Cisco IOS",
+      "os_version": "15.2",
+      "vlan": 99,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 22,
+          "protocol": "tcp",
+          "service": "ssh",
+          "version": "OpenSSH 7.4"
+        }
+      ],
+      "criticality": 3,
+      "owner": "Network Team",
+      "tags": [
+        "access",
+        "floor-1"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "SW-ACCESS-2",
+      "name": "Access switch floor 2",
+      "type": "switch",
+      "ip": "10.0.99.12",
+      "mac": "02:00:00:00:00:08",
+      "os": "Cisco IOS",
+      "os_version": "15.2",
+      "vlan": 99,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 22,
+          "protocol": "tcp",
+          "service": "ssh",
+          "version": "OpenSSH 7.4"
+        }
+      ],
+      "criticality": 3,
+      "owner": "Network Team",
+      "tags": [
+        "access",
+        "floor-2"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-01",
+      "name": "Employee workstation 01",
+      "type": "workstation",
+      "ip": "10.0.10.11",
+      "mac": "02:00:00:00:00:09",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 01",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-02",
+      "name": "Employee workstation 02",
+      "type": "workstation",
+      "ip": "10.0.10.12",
+      "mac": "02:00:00:00:00:0A",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 02",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-03",
+      "name": "Employee workstation 03",
+      "type": "workstation",
+      "ip": "10.0.10.13",
+      "mac": "02:00:00:00:00:0B",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 03",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-04",
+      "name": "Employee workstation 04",
+      "type": "workstation",
+      "ip": "10.0.10.14",
+      "mac": "02:00:00:00:00:0C",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 04",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-05",
+      "name": "Employee workstation 05",
+      "type": "workstation",
+      "ip": "10.0.10.15",
+      "mac": "02:00:00:00:00:0D",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 05",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-06",
+      "name": "Employee workstation 06",
+      "type": "workstation",
+      "ip": "10.0.10.16",
+      "mac": "02:00:00:00:00:0E",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 06",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-07",
+      "name": "Employee workstation 07",
+      "type": "workstation",
+      "ip": "10.0.10.17",
+      "mac": "02:00:00:00:00:0F",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 07",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-08",
+      "name": "Employee workstation 08",
+      "type": "workstation",
+      "ip": "10.0.10.18",
+      "mac": "02:00:00:00:00:10",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 08",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-09",
+      "name": "Employee workstation 09",
+      "type": "workstation",
+      "ip": "10.0.10.19",
+      "mac": "02:00:00:00:00:11",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 09",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "WS-10",
+      "name": "Employee workstation 10",
+      "type": "workstation",
+      "ip": "10.0.10.20",
+      "mac": "02:00:00:00:00:12",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 2,
+      "owner": "Employee 10",
+      "tags": [
+        "windows",
+        "end-user"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "ADMIN-01",
+      "name": "IT administrator workstation",
+      "type": "workstation",
+      "ip": "10.0.99.50",
+      "mac": "02:00:00:00:00:13",
+      "os": "Windows",
+      "os_version": "11",
+      "vlan": 99,
+      "zone": "management",
+      "open_ports": [
+        {
+          "port": 135,
+          "protocol": "tcp",
+          "service": "msrpc",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        },
+        {
+          "port": 3389,
+          "protocol": "tcp",
+          "service": "rdp",
+          "version": null
+        }
+      ],
+      "criticality": 4,
+      "owner": "IT Admin",
+      "tags": [
+        "windows",
+        "privileged"
+      ],
+      "known_cves": [],
+      "data_classification": "confidential"
+    },
+    {
+      "code": "APP-01",
+      "name": "Internal application server",
+      "type": "server",
+      "ip": "10.0.20.10",
+      "mac": "02:00:00:00:00:14",
+      "os": "Ubuntu",
+      "os_version": "22.04",
+      "vlan": 20,
+      "zone": "server",
+      "open_ports": [
+        {
+          "port": 8080,
+          "protocol": "tcp",
+          "service": "http-app",
+          "version": "Tomcat 9.0.80"
+        }
+      ],
+      "criticality": 4,
+      "owner": "App Team",
+      "tags": [
+        "business-app"
+      ],
+      "known_cves": [],
+      "data_classification": "confidential"
+    },
+    {
+      "code": "DB-01",
+      "name": "Customer database",
+      "type": "database",
+      "ip": "10.0.20.20",
+      "mac": "02:00:00:00:00:15",
+      "os": "Ubuntu",
+      "os_version": "22.04",
+      "vlan": 20,
+      "zone": "server",
+      "open_ports": [
+        {
+          "port": 5432,
+          "protocol": "tcp",
+          "service": "postgresql",
+          "version": "PostgreSQL 15.4"
+        }
+      ],
+      "criticality": 5,
+      "owner": "Data Team",
+      "tags": [
+        "crown-jewel",
+        "customer-data"
+      ],
+      "known_cves": [],
+      "data_classification": "restricted"
+    },
+    {
+      "code": "FS-01",
+      "name": "Departmental file server",
+      "type": "file_server",
+      "ip": "10.0.20.30",
+      "mac": "02:00:00:00:00:16",
+      "os": "Windows Server",
+      "os_version": "2019",
+      "vlan": 20,
+      "zone": "server",
+      "open_ports": [
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 4,
+      "owner": "IT Operations",
+      "tags": [
+        "windows",
+        "file-shares"
+      ],
+      "known_cves": [
+        {
+          "id": "CVE-2022-26809",
+          "cvss": 8.8,
+          "description": "Windows RPC runtime remote code execution reachable over SMB."
+        }
+      ],
+      "data_classification": "confidential"
+    },
+    {
+      "code": "DC-01",
+      "name": "Active Directory domain controller",
+      "type": "domain_controller",
+      "ip": "10.0.20.5",
+      "mac": "02:00:00:00:00:17",
+      "os": "Windows Server",
+      "os_version": "2022",
+      "vlan": 20,
+      "zone": "server",
+      "open_ports": [
+        {
+          "port": 88,
+          "protocol": "tcp",
+          "service": "kerberos",
+          "version": null
+        },
+        {
+          "port": 389,
+          "protocol": "tcp",
+          "service": "ldap",
+          "version": null
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "smb",
+          "version": "SMB 3.1.1"
+        }
+      ],
+      "criticality": 5,
+      "owner": "IT Operations",
+      "tags": [
+        "windows",
+        "identity",
+        "crown-jewel"
+      ],
+      "known_cves": [],
+      "data_classification": "restricted"
+    },
+    {
+      "code": "AP-01",
+      "name": "Wireless access point",
+      "type": "access_point",
+      "ip": "10.0.10.250",
+      "mac": "02:00:00:00:00:18",
+      "os": "ArubaOS",
+      "os_version": "8.10",
+      "vlan": 10,
+      "zone": "corporate",
+      "open_ports": [
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "https-admin",
+          "version": null
+        }
+      ],
+      "criticality": 3,
+      "owner": "Network Team",
+      "tags": [
+        "wireless",
+        "serves-vlan-10",
+        "serves-vlan-50"
+      ],
+      "known_cves": [],
+      "data_classification": "internal"
+    },
+    {
+      "code": "GUEST-DEV",
+      "name": "Guest laptop",
+      "type": "laptop",
+      "ip": "10.0.50.25",
+      "mac": "02:00:00:00:00:19",
+      "os": "Windows",
+      "os_version": "10",
+      "vlan": 50,
+      "zone": "guest",
+      "open_ports": [],
+      "criticality": 1,
+      "owner": "Visitor",
+      "tags": [
+        "unmanaged",
+        "byod"
+      ],
+      "known_cves": [],
+      "data_classification": "public"
+    }
+  ],
+  "links": [
+    {
+      "code": "L-01",
+      "source": "INTERNET",
+      "target": "FW-EDGE",
+      "type": "wan",
+      "allowed_protocols": [
+        "tcp"
+      ],
+      "allowed_ports": [
+        80,
+        443
+      ],
+      "bidirectional": true
+    },
+    {
+      "code": "L-02",
+      "source": "FW-EDGE",
+      "target": "WEB-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "tcp"
+      ],
+      "allowed_ports": [
+        80,
+        443
+      ],
+      "bidirectional": true
+    },
+    {
+      "code": "L-03",
+      "source": "FW-EDGE",
+      "target": "VPN-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "tcp",
+        "udp"
+      ],
+      "allowed_ports": [
+        443
+      ],
+      "bidirectional": true
+    },
+    {
+      "code": "L-04",
+      "source": "FW-EDGE",
+      "target": "FW-INT",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-05",
+      "source": "FW-INT",
+      "target": "SW-CORE",
+      "type": "trunk",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-06",
+      "source": "SW-CORE",
+      "target": "SW-ACCESS-1",
+      "type": "trunk",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-07",
+      "source": "SW-CORE",
+      "target": "SW-ACCESS-2",
+      "type": "trunk",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-08",
+      "source": "SW-ACCESS-1",
+      "target": "WS-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-09",
+      "source": "SW-ACCESS-1",
+      "target": "WS-02",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-10",
+      "source": "SW-ACCESS-1",
+      "target": "WS-03",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-11",
+      "source": "SW-ACCESS-1",
+      "target": "WS-04",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-12",
+      "source": "SW-ACCESS-1",
+      "target": "WS-05",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-13",
+      "source": "SW-ACCESS-2",
+      "target": "WS-06",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-14",
+      "source": "SW-ACCESS-2",
+      "target": "WS-07",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-15",
+      "source": "SW-ACCESS-2",
+      "target": "WS-08",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-16",
+      "source": "SW-ACCESS-2",
+      "target": "WS-09",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-17",
+      "source": "SW-ACCESS-2",
+      "target": "WS-10",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-18",
+      "source": "SW-CORE",
+      "target": "APP-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-19",
+      "source": "SW-CORE",
+      "target": "DB-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-20",
+      "source": "SW-CORE",
+      "target": "FS-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-21",
+      "source": "SW-CORE",
+      "target": "DC-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-22",
+      "source": "SW-CORE",
+      "target": "ADMIN-01",
+      "type": "ethernet",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-23",
+      "source": "AP-01",
+      "target": "SW-ACCESS-2",
+      "type": "trunk",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    },
+    {
+      "code": "L-24",
+      "source": "GUEST-DEV",
+      "target": "AP-01",
+      "type": "wifi",
+      "allowed_protocols": [
+        "any"
+      ],
+      "allowed_ports": [],
+      "bidirectional": true
+    }
+  ],
+  "controls": [
+    {
+      "code": "FW-EDGE",
+      "name": "Edge firewall policy",
+      "type": "firewall",
+      "enabled": true,
+      "config": {
+        "rules": [
+          {
+            "src_zone": "internet",
+            "dst_zone": "dmz",
+            "ports": [
+              80,
+              443
+            ],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "dmz",
+            "dst_zone": "server",
+            "ports": [
+              8080
+            ],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "any",
+            "dst_zone": "internet",
+            "ports": [
+              443
+            ],
+            "protocol": "any",
+            "action": "allow"
+          }
+        ],
+        "default_action": "deny",
+        "logging": true
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "FW-EDGE"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "FW-INT",
+      "name": "Internal firewall policy",
+      "type": "firewall",
+      "enabled": true,
+      "config": {
+        "rules": [
+          {
+            "src_zone": "corporate",
+            "dst_zone": "server",
+            "ports": [
+              445,
+              88,
+              389,
+              8080
+            ],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "server",
+            "dst_zone": "server",
+            "ports": [],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "management",
+            "dst_zone": "any",
+            "ports": [],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "guest",
+            "dst_zone": "internet",
+            "ports": [],
+            "protocol": "any",
+            "action": "allow"
+          },
+          {
+            "src_zone": "dmz",
+            "dst_zone": "server",
+            "ports": [
+              8080
+            ],
+            "protocol": "any",
+            "action": "allow"
+          }
+        ],
+        "default_action": "deny",
+        "logging": true
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "FW-INT",
+          "SW-CORE"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "SEG-01",
+      "name": "VLAN segmentation",
+      "type": "segmentation",
+      "enabled": true,
+      "config": {
+        "vlan_rules": [
+          {
+            "src_vlan": 50,
+            "dst_vlan": 10,
+            "action": "deny"
+          }
+        ],
+        "default_action": "allow"
+      },
+      "placement": {
+        "kind": "network_wide",
+        "asset_codes": [],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "WAF-01",
+      "name": "Web application firewall",
+      "type": "waf",
+      "enabled": true,
+      "config": {
+        "mode": "detect",
+        "rulesets": [
+          "owasp-crs"
+        ]
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "WEB-01"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "IDS-01",
+      "name": "Network intrusion detection",
+      "type": "ids_ips",
+      "enabled": true,
+      "config": {
+        "mode": "ids",
+        "signature_sets": [
+          "network",
+          "web",
+          "smb"
+        ]
+      },
+      "placement": {
+        "kind": "sensor",
+        "asset_codes": [],
+        "zones": [
+          "dmz",
+          "server"
+        ],
+        "services": []
+      }
+    },
+    {
+      "code": "NAC-01",
+      "name": "802.1X network access control",
+      "type": "nac_8021x",
+      "enabled": true,
+      "config": {
+        "enforced": true,
+        "mac_auth_bypass_allowed": true
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "AP-01",
+          "SW-ACCESS-1",
+          "SW-ACCESS-2"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "SWSEC-1",
+      "name": "Switch security floor 1",
+      "type": "switch_security",
+      "enabled": true,
+      "config": {
+        "port_security": true,
+        "max_macs_per_port": 2,
+        "dhcp_snooping": true,
+        "dynamic_arp_inspection": true
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "SW-ACCESS-1"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "SWSEC-2",
+      "name": "Switch security floor 2",
+      "type": "switch_security",
+      "enabled": true,
+      "config": {
+        "port_security": true,
+        "max_macs_per_port": 2,
+        "dhcp_snooping": true,
+        "dynamic_arp_inspection": false
+      },
+      "placement": {
+        "kind": "inline",
+        "asset_codes": [
+          "SW-ACCESS-2"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "MFA-01",
+      "name": "Multi-factor authentication",
+      "type": "mfa",
+      "enabled": true,
+      "config": {
+        "enforced_for": [
+          "email",
+          "ad"
+        ]
+      },
+      "placement": {
+        "kind": "identity",
+        "asset_codes": [],
+        "zones": [],
+        "services": [
+          "email",
+          "ad"
+        ]
+      }
+    },
+    {
+      "code": "IDP-01",
+      "name": "Identity and password policy",
+      "type": "identity_policy",
+      "enabled": true,
+      "config": {
+        "lockout_threshold": null,
+        "password_min_length": 8
+      },
+      "placement": {
+        "kind": "identity",
+        "asset_codes": [],
+        "zones": [],
+        "services": [
+          "email",
+          "ad",
+          "vpn"
+        ]
+      }
+    },
+    {
+      "code": "EDR-01",
+      "name": "Endpoint detection and response",
+      "type": "edr",
+      "enabled": true,
+      "config": {
+        "mode": "block"
+      },
+      "placement": {
+        "kind": "host",
+        "asset_codes": [
+          "WS-01",
+          "WS-02",
+          "WS-03",
+          "WS-04",
+          "WS-05",
+          "WS-06",
+          "WS-07",
+          "WS-08",
+          "WS-09",
+          "WS-10",
+          "DC-01",
+          "APP-01"
+        ],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "MAIL-01",
+      "name": "Secure email gateway",
+      "type": "email_gateway",
+      "enabled": true,
+      "config": {
+        "attachment_sandboxing": true,
+        "url_rewriting": true
+      },
+      "placement": {
+        "kind": "identity",
+        "asset_codes": [],
+        "zones": [],
+        "services": [
+          "email"
+        ]
+      }
+    },
+    {
+      "code": "SIEM-01",
+      "name": "Security information and event management",
+      "type": "siem",
+      "enabled": true,
+      "config": {
+        "log_sources": [
+          "auth",
+          "windows",
+          "firewall"
+        ],
+        "ueba": false
+      },
+      "placement": {
+        "kind": "network_wide",
+        "asset_codes": [],
+        "zones": [],
+        "services": []
+      }
+    },
+    {
+      "code": "BKP-01",
+      "name": "Backups",
+      "type": "backup",
+      "enabled": true,
+      "config": {
+        "offline_copies": false,
+        "tested_restore": false
+      },
+      "placement": {
+        "kind": "host",
+        "asset_codes": [
+          "DB-01",
+          "FS-01"
+        ],
+        "zones": [],
+        "services": []
+      }
+    }
+  ]
+}

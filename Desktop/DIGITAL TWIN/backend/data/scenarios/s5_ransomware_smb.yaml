@@ -1,0 +1,41 @@
+id: e15f4a6b-3c7d-4a0f-9835-7b8c9d0e1f05
+code: S5
+name: ransomware-smb
+description: >-
+  Ransomware on an employee workstation spreads to the file shares over SMB, dumps
+  credentials there and encrypts the data.
+attacker_profile: compromised_device
+entry: {asset_code: WS-03}
+goal: {kind: encrypt, min_criticality: 4}
+initial_effects: [gain_foothold, obtain_credentials]
+tags: [ransomware, smb, impact]
+steps:
+  - order: 1
+    name: Spread to the file shares over SMB
+    technique_id: T1021.002
+    tactic: lateral_movement
+    layer: 7
+    protocol: tcp
+    port: 445
+    target_selector: role:file_server
+    preconditions: [obtain_credentials]
+    on_success: [gain_foothold]
+    notes: The infected workstation already holds its user's session.
+  - order: 2
+    name: Dump credentials on the file server
+    technique_id: T1003
+    tactic: credential_access
+    layer: 7
+    protocol: any
+    target_selector: current_position
+    preconditions: [gain_foothold]
+    on_success: [obtain_credentials, escalate_privilege]
+  - order: 3
+    name: Encrypt the file shares
+    technique_id: T1486
+    tactic: impact
+    layer: 7
+    protocol: any
+    target_selector: current_position
+    preconditions: [escalate_privilege]
+    on_success: [encrypt_data]

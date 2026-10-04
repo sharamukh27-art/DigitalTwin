@@ -1,0 +1,51 @@
+id: 7a9d2e4c-1b3f-4c6a-8d52-9e0f1a2b3c02
+code: S2
+name: phish-to-fileserver
+description: >-
+  An outsider emails a malicious attachment to an employee, reuses the victim's
+  account, moves to the file server over SMB and reads the files on it.
+attacker_profile: outsider
+entry: {zone: internet}
+goal: {kind: reach_asset, target_code: FS-01}
+tags: [phishing, smb, data-theft]
+steps:
+  - order: 1
+    name: Send a malicious attachment to an employee
+    technique_id: T1566.001
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 25
+    service: email
+    target_selector: any_in_zone:corporate
+    bypasses: [firewall]
+    bypass_reason: The message is delivered through the mail flow, which the twin does not model as a network path.
+    on_success: [gain_foothold]
+  - order: 2
+    name: Reuse the victim's account
+    technique_id: T1078
+    tactic: initial_access
+    layer: 7
+    protocol: any
+    target_selector: current_position
+    preconditions: [gain_foothold]
+    on_success: [obtain_credentials]
+  - order: 3
+    name: Move to the file server over SMB
+    technique_id: T1021.002
+    tactic: lateral_movement
+    layer: 7
+    protocol: tcp
+    port: 445
+    target_code: FS-01
+    preconditions: [obtain_credentials]
+    on_success: [gain_foothold]
+  - order: 4
+    name: Read files from the file server
+    technique_id: T1005
+    tactic: collection
+    layer: 7
+    protocol: any
+    target_selector: current_position
+    preconditions: [gain_foothold]
+    on_success: [read_data]

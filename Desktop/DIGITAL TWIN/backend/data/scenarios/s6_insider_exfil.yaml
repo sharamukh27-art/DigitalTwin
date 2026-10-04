@@ -1,0 +1,35 @@
+id: 2d6a5b7c-4e8f-4b1a-a946-8c9d0e1f2a06
+code: S6
+name: insider-exfil
+description: >-
+  An administrator copies confidential files from the file server to their own
+  workstation and sends them out to the internet.
+attacker_profile: insider
+entry: {asset_code: ADMIN-01}
+goal: {kind: exfiltrate}
+initial_effects: [gain_foothold, obtain_credentials, escalate_privilege]
+tags: [insider, data-theft, exfiltration]
+steps:
+  - order: 1
+    name: Collect files from the file server
+    technique_id: T1005
+    tactic: collection
+    layer: 7
+    protocol: tcp
+    port: 445
+    target_code: FS-01
+    advance: false
+    preconditions: [obtain_credentials]
+    on_success: [read_data]
+    notes: The insider reads the share from their own workstation and does not move.
+  - order: 2
+    name: Send the files out to the internet
+    technique_id: T1048
+    tactic: exfiltration
+    layer: 4
+    protocol: tcp
+    port: 443
+    target_selector: role:attacker_node
+    advance: false
+    preconditions: [read_data]
+    on_success: [exfiltrate_data]

@@ -1,0 +1,77 @@
+# What each control type can do about each ATT&CK technique.
+#
+# capabilities: control_type -> technique_id -> {action, confidence, requires}
+#   action:     detect | block | log
+#   confidence: 0-1
+#   requires:   config_key -> required value. A plain value must be equal.
+#               {contains: x} means the config list must contain x.
+#               {not_null: true} means the config value must be set.
+# "block" becomes "detect" when the control runs in a detect mode
+# (waf detect, ids_ips ids, edr detect, dlp detect).
+#
+# min_layer: lowest OSI layer each control type can see. A technique that works
+# below it is not applicable. Firewall, segmentation and waf never see MAC/ARP traffic.
+
+min_layer:
+  firewall: 3
+  segmentation: 3
+  waf: 7
+  ids_ips: 2
+  nac_8021x: 2
+  switch_security: 2
+  mfa: 7
+  identity_policy: 7
+  edr: 7
+  email_gateway: 7
+  dlp: 4
+  siem: 2
+  backup: 7
+  honeypot: 4
+
+capabilities:
+  waf:
+    T1190: {action: block, confidence: 0.80}
+    T1505.003: {action: detect, confidence: 0.50}
+  ids_ips:
+    T1557.002: {action: detect, confidence: 0.70, requires: {signature_sets: {contains: arp}}}
+    T1046: {action: detect, confidence: 0.80, requires: {signature_sets: {contains: network}}}
+    T1190: {action: block, confidence: 0.60, requires: {signature_sets: {contains: web}}}
+    T1021.002: {action: detect, confidence: 0.55, requires: {signature_sets: {contains: smb}}}
+    T1110: {action: detect, confidence: 0.60, requires: {signature_sets: {contains: auth}}}
+    T1048: {action: detect, confidence: 0.60, requires: {signature_sets: {contains: network}}}
+  nac_8021x:
+    T1599: {action: block, confidence: 0.90, requires: {enforced: true, mac_auth_bypass_allowed: false}}
+    T1557.002: {action: detect, confidence: 0.40, requires: {enforced: true}}
+  switch_security:
+    T1557.002: {action: block, confidence: 0.90, requires: {dynamic_arp_inspection: true, dhcp_snooping: true}}
+    T1599: {action: detect, confidence: 0.60, requires: {port_security: true}}
+  mfa:
+    T1078: {action: block, confidence: 0.90}
+    T1110: {action: block, confidence: 0.95}
+    T1133: {action: block, confidence: 0.90, requires: {enforced_for: {contains: vpn}}}
+  identity_policy:
+    T1110: {action: block, confidence: 0.70, requires: {lockout_threshold: {not_null: true}}}
+  edr:
+    T1003: {action: block, confidence: 0.85}
+    T1486: {action: block, confidence: 0.80}
+    T1505.003: {action: detect, confidence: 0.70}
+    T1021.002: {action: detect, confidence: 0.60}
+    T1566.001: {action: detect, confidence: 0.60}
+    T1005: {action: detect, confidence: 0.30}
+  email_gateway:
+    T1566.001: {action: block, confidence: 0.70, requires: {attachment_sandboxing: true}}
+  dlp:
+    T1048: {action: block, confidence: 0.70}
+    T1005: {action: detect, confidence: 0.50}
+  siem:
+    T1110: {action: detect, confidence: 0.80, requires: {log_sources: {contains: auth}}}
+    T1078: {action: detect, confidence: 0.50, requires: {ueba: true}}
+    T1021.002: {action: detect, confidence: 0.40, requires: {log_sources: {contains: windows}}}
+  firewall:
+    T1046: {action: log, confidence: 0.50, requires: {logging: true}}
+  # Added in Phase 8. A honeypot only detects: an attacker who scans or moves inside a
+  # zone that holds decoys is likely to touch one. It never blocks.
+  honeypot:
+    T1046: {action: detect, confidence: 0.85, requires: {alerting: true}}
+    T1021.002: {action: detect, confidence: 0.45, requires: {alerting: true, decoy_services: {contains: smb}}}
+    T1110: {action: detect, confidence: 0.40, requires: {alerting: true}}

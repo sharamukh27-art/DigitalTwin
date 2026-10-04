@@ -1,0 +1,146 @@
+{
+ "type": "bundle",
+ "objects": [
+  {
+   "type": "attack-pattern",
+   "id": "attack-pattern--arp",
+   "name": "ARP Cache Poisoning",
+   "description": "Adversaries may poison Address Resolution Protocol (ARP) caches to position themselves between two networked devices.(Citation: Example) This enables follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040).",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "T1557.002",
+     "url": "https://attack.mitre.org/techniques/T1557/002"
+    }
+   ]
+  },
+  {
+   "type": "attack-pattern",
+   "id": "attack-pattern--web",
+   "name": "Exploit Public-Facing Application",
+   "description": "Adversaries may attempt to exploit a weakness in an Internet-facing host or system to initially access a network.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "T1190",
+     "url": "https://attack.mitre.org/techniques/T1190"
+    }
+   ],
+   "x_mitre_detection": "Monitor application logs for abnormal behavior that may indicate attempted exploitation."
+  },
+  {
+   "type": "attack-pattern",
+   "id": "attack-pattern--brute",
+   "name": "Brute Force",
+   "description": "Adversaries may use brute force techniques to gain access to accounts when passwords are unknown.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "T1110",
+     "url": "https://attack.mitre.org/techniques/T1110"
+    }
+   ]
+  },
+  {
+   "type": "attack-pattern",
+   "id": "attack-pattern--old",
+   "name": "Retired Technique",
+   "description": "This technique was revoked.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "T1999",
+     "url": "https://attack.mitre.org/techniques/T1999"
+    }
+   ],
+   "revoked": true
+  },
+  {
+   "type": "attack-pattern",
+   "id": "attack-pattern--dep",
+   "name": "Deprecated Technique",
+   "description": "This technique was deprecated.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "T1998",
+     "url": "https://attack.mitre.org/techniques/T1998"
+    }
+   ],
+   "x_mitre_deprecated": true
+  },
+  {
+   "type": "course-of-action",
+   "id": "course-of-action--nips",
+   "name": "Network Intrusion Prevention",
+   "description": "Use intrusion detection signatures to block traffic at network boundaries.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "M1031"
+    }
+   ]
+  },
+  {
+   "type": "course-of-action",
+   "id": "course-of-action--mfa",
+   "name": "Multi-factor Authentication",
+   "description": "Use two or more pieces of evidence to authenticate to a system.",
+   "external_references": [
+    {
+     "source_name": "mitre-attack",
+     "external_id": "M1032"
+    }
+   ]
+  },
+  {
+   "type": "x-mitre-detection-strategy",
+   "id": "x-mitre-detection-strategy--arp",
+   "name": "Detect ARP Cache Poisoning",
+   "x_mitre_analytic_refs": [
+    "x-mitre-analytic--arp1"
+   ]
+  },
+  {
+   "type": "x-mitre-analytic",
+   "id": "x-mitre-analytic--arp1",
+   "name": "Analytic 1",
+   "description": "Detects anomalous ARP traffic such as multiple IP addresses resolving to a single MAC address."
+  },
+  {
+   "type": "relationship",
+   "id": "relationship--1",
+   "relationship_type": "mitigates",
+   "source_ref": "course-of-action--nips",
+   "target_ref": "attack-pattern--arp",
+   "description": "Network intrusion prevention systems can identify traffic patterns indicative of ARP poisoning."
+  },
+  {
+   "type": "relationship",
+   "id": "relationship--2",
+   "relationship_type": "detects",
+   "source_ref": "x-mitre-detection-strategy--arp",
+   "target_ref": "attack-pattern--arp"
+  },
+  {
+   "type": "relationship",
+   "id": "relationship--3",
+   "relationship_type": "mitigates",
+   "source_ref": "course-of-action--mfa",
+   "target_ref": "attack-pattern--brute"
+  },
+  {
+   "type": "relationship",
+   "id": "relationship--4",
+   "relationship_type": "mitigates",
+   "source_ref": "course-of-action--mfa",
+   "target_ref": "attack-pattern--web",
+   "revoked": true
+  },
+  {
+   "type": "intrusion-set",
+   "id": "intrusion-set--x",
+   "name": "Some Group"
+  }
+ ]
+}

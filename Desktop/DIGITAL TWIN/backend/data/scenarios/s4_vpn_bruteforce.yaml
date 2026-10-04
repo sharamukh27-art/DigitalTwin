@@ -1,0 +1,44 @@
+id: 9b0c3d5e-2f4a-4e8c-b624-6a7b8c9d0e04
+code: S4
+name: vpn-bruteforce
+description: >-
+  An outsider finds the VPN gateway, guesses a password, and logs in with the valid
+  account to reach the most critical system in the internal network.
+attacker_profile: outsider
+entry: {zone: internet}
+goal: {kind: reach_any_critical, min_criticality: 5}
+tags: [vpn, credentials, remote-access]
+steps:
+  - order: 1
+    name: Reach the VPN gateway from the internet
+    technique_id: T1133
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 443
+    service: vpn
+    target_code: VPN-01
+    on_success: []
+  - order: 2
+    name: Brute force a VPN account
+    technique_id: T1110
+    tactic: credential_access
+    layer: 7
+    protocol: tcp
+    port: 443
+    service: vpn
+    target_code: VPN-01
+    on_success: [obtain_credentials]
+  - order: 3
+    name: Log in over the VPN with the valid account
+    technique_id: T1078
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 443
+    service: vpn
+    target_selector: next_hop_toward_goal
+    bypasses: [firewall]
+    bypass_reason: An authenticated VPN session is tunnelled into the internal network past the perimeter rules.
+    preconditions: [obtain_credentials]
+    on_success: [gain_foothold]

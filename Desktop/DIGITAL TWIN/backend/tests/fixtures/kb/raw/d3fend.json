@@ -1,0 +1,131 @@
+{
+ "@context": {},
+ "@graph": [
+  {
+   "@id": "d3f:NetworkTraffic",
+   "@type": "owl:Class",
+   "rdfs:label": "Network Traffic",
+   "rdfs:subClassOf": {
+    "@id": "d3f:DigitalArtifact"
+   }
+  },
+  {
+   "@id": "d3f:ARPTraffic",
+   "@type": "owl:Class",
+   "rdfs:label": "ARP Traffic",
+   "rdfs:subClassOf": {
+    "@id": "d3f:NetworkTraffic"
+   }
+  },
+  {
+   "@id": "d3f:File",
+   "@type": "owl:Class",
+   "rdfs:label": "File",
+   "rdfs:subClassOf": {
+    "@id": "d3f:DigitalArtifact"
+   }
+  },
+  {
+   "@id": "d3f:DigitalArtifact",
+   "@type": "owl:Class",
+   "rdfs:label": "Digital Artifact"
+  },
+  {
+   "@id": "_:b1",
+   "@type": "owl:Restriction",
+   "owl:onProperty": {
+    "@id": "d3f:produces"
+   },
+   "owl:someValuesFrom": {
+    "@id": "d3f:ARPTraffic"
+   }
+  },
+  {
+   "@id": "d3f:T1557",
+   "@type": "owl:Class",
+   "d3f:attack-id": "T1557",
+   "rdfs:label": "Adversary-in-the-Middle",
+   "rdfs:subClassOf": [
+    {
+     "@id": "_:b1"
+    },
+    {
+     "@id": "d3f:CredentialAccessTechnique"
+    }
+   ]
+  },
+  {
+   "@id": "d3f:T1557.002",
+   "@type": "owl:Class",
+   "d3f:attack-id": "T1557.002",
+   "rdfs:label": "ARP Cache Poisoning",
+   "rdfs:subClassOf": {
+    "@id": "d3f:T1557"
+   }
+  },
+  {
+   "@id": "d3f:T1486",
+   "@type": "owl:Class",
+   "d3f:attack-id": "T1486",
+   "rdfs:label": "Data Encrypted for Impact",
+   "d3f:modifies": {
+    "@id": "d3f:File"
+   }
+  },
+  {
+   "@id": "d3f:T1110",
+   "@type": "owl:Class",
+   "d3f:attack-id": "T1110",
+   "rdfs:label": "Brute Force"
+  },
+  {
+   "@id": "d3f:NetworkTrafficAnalysis",
+   "@type": [
+    "owl:Class"
+   ],
+   "d3f:d3fend-id": "D3-NTA",
+   "rdfs:label": "Network Traffic Analysis",
+   "d3f:definition": "Analyzing intercepted or summarized computer network traffic to detect unauthorized activity.",
+   "d3f:kb-article": "## How it works\nSensors inspect ARP replies and flag a MAC address that claims several IP addresses.",
+   "d3f:analyzes": {
+    "@id": "d3f:NetworkTraffic"
+   },
+   "rdfs:subClassOf": {
+    "@id": "d3f:DefensiveTechnique"
+   }
+  },
+  {
+   "@id": "d3f:NetworkTrafficAnalysisCopy",
+   "@type": [
+    "owl:Class"
+   ],
+   "d3f:d3fend-id": "D3-NTA",
+   "rdfs:label": "Network Traffic Analysis (duplicate id)",
+   "d3f:definition": "Duplicate node that shares an id.",
+   "d3f:analyzes": {
+    "@id": "d3f:NetworkTraffic"
+   }
+  },
+  {
+   "@id": "d3f:FileEncryption",
+   "@type": [
+    "owl:Class"
+   ],
+   "d3f:d3fend-id": "D3-FE",
+   "rdfs:label": "File Encryption",
+   "d3f:definition": "Encrypting a file using a cryptographic key.",
+   "d3f:encrypts": {
+    "@id": "d3f:File"
+   }
+  },
+  {
+   "@id": "d3f:StrongPasswordPolicy",
+   "@type": [
+    "owl:Class"
+   ],
+   "d3f:d3fend-id": "D3-SPP",
+   "rdfs:label": "Strong Password Policy",
+   "d3f:definition": "Modifying system configuration to increase password strength."
+  }
+ ]
+}

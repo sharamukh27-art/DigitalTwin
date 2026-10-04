@@ -1,0 +1,72 @@
+# Single source of truth for ATT&CK techniques used by every phase.
+techniques:
+  - id: T1557.002
+    name: ARP Cache Poisoning
+    tactic: credential_access
+    osi_layer: 2
+    description: Attacker poisons ARP caches to sit between hosts and intercept their traffic.
+  - id: T1599
+    name: Network Boundary Bridging
+    tactic: defense_evasion
+    osi_layer: 3
+    description: Attacker compromises a perimeter device to route traffic across separated network segments.
+  - id: T1566.001
+    name: Spearphishing Attachment
+    tactic: initial_access
+    osi_layer: 7
+    description: Attacker emails a malicious attachment to a targeted user to gain a foothold.
+  - id: T1078
+    name: Valid Accounts
+    tactic: initial_access
+    osi_layer: 7
+    description: Attacker logs in with stolen or default credentials of an existing account.
+  - id: T1021.002
+    name: SMB/Windows Admin Shares
+    tactic: lateral_movement
+    osi_layer: 7
+    description: Attacker uses valid accounts over SMB admin shares to move to other hosts.
+  - id: T1190
+    name: Exploit Public-Facing Application
+    tactic: initial_access
+    osi_layer: 7
+    description: Attacker exploits a weakness in an internet-facing service to gain access.
+  - id: T1505.003
+    name: Web Shell
+    tactic: persistence
+    osi_layer: 7
+    description: Attacker installs a web shell on a web server to keep remote access.
+  - id: T1110
+    name: Brute Force
+    tactic: credential_access
+    osi_layer: 7
+    description: Attacker guesses passwords repeatedly to obtain account access.
+  - id: T1133
+    name: External Remote Services
+    tactic: initial_access
+    osi_layer: 7
+    description: Attacker enters through remote services such as VPN gateways exposed to the internet.
+  - id: T1486
+    name: Data Encrypted for Impact
+    tactic: impact
+    osi_layer: 7
+    description: Attacker encrypts data on target systems to disrupt availability.
+  - id: T1005
+    name: Data from Local System
+    tactic: collection
+    osi_layer: 7
+    description: Attacker collects sensitive files from the local file system of a compromised host.
+  - id: T1048
+    name: Exfiltration Over Alternative Protocol
+    tactic: exfiltration
+    osi_layer: 4
+    description: Attacker sends stolen data out over a protocol other than the command channel.
+  - id: T1046
+    name: Network Service Discovery
+    tactic: discovery
+    osi_layer: 4
+    description: Attacker enumerates services listening on remote hosts to find targets.
+  - id: T1003
+    name: OS Credential Dumping
+    tactic: credential_access
+    osi_layer: 7
+    description: Attacker extracts credential material from operating system memory or stores.

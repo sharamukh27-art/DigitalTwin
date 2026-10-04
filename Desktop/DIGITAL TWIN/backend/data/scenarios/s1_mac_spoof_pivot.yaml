@@ -1,0 +1,67 @@
+id: 3f2b6c1e-8a4d-4f7b-9c21-5d6e7f8a9b01
+code: S1
+name: mac-spoof-pivot
+description: >-
+  A device on the guest Wi-Fi poisons ARP on its access switch, bridges from the guest
+  VLAN into the corporate VLAN, scans the server zone, and pivots through the
+  application server to the customer database.
+attacker_profile: compromised_device
+entry: {asset_code: GUEST-DEV}
+goal: {kind: reach_asset, target_code: DB-01}
+initial_effects: [gain_foothold]
+tags: [layer2, guest-wifi, lateral-movement]
+steps:
+  - order: 1
+    name: Poison ARP on the access switch segment
+    technique_id: T1557.002
+    tactic: credential_access
+    layer: 2
+    protocol: any
+    target_code: SW-ACCESS-2
+    advance: false
+    preconditions: [gain_foothold]
+    on_success: [obtain_credentials]
+    notes: The attacker stays on the guest device and intercepts traffic on the segment.
+  - order: 2
+    name: Bridge from guest VLAN 50 into corporate VLAN 10
+    technique_id: T1599
+    tactic: defense_evasion
+    layer: 3
+    protocol: any
+    target_selector: role:workstation
+    bypasses: [segmentation]
+    bypass_reason: Boundary bridging is the act of crossing the VLAN boundary, so VLAN rules do not stop it. NAC and switch security can.
+    preconditions: [gain_foothold]
+    on_success: [gain_foothold]
+  - order: 3
+    name: Scan the server zone for services
+    technique_id: T1046
+    tactic: discovery
+    layer: 4
+    protocol: tcp
+    port: 445
+    target_selector: any_in_zone:server
+    advance: false
+    preconditions: [gain_foothold]
+    on_success: []
+  - order: 4
+    name: Exploit the internal application server
+    technique_id: T1190
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 8080
+    target_code: APP-01
+    preconditions: [gain_foothold]
+    on_success: [gain_foothold, escalate_privilege]
+  - order: 5
+    name: Log in to the database with intercepted credentials
+    technique_id: T1078
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 5432
+    service: database
+    target_selector: next_hop_toward_goal
+    preconditions: [obtain_credentials]
+    on_success: [read_data]

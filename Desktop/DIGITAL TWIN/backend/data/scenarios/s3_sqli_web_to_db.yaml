@@ -1,0 +1,61 @@
+id: c4e81f37-6d2a-4b9e-a713-2f4b5c6d7e03
+code: S3
+name: sqli-web-to-db
+description: >-
+  An outsider exploits the public web server, installs a web shell, exploits the
+  application server behind it and uses its credentials to reach the customer database.
+attacker_profile: outsider
+entry: {zone: internet}
+goal: {kind: reach_asset, target_code: DB-01}
+tags: [web, public-facing, data-theft]
+steps:
+  - order: 1
+    name: Exploit the public web application
+    technique_id: T1190
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 443
+    target_code: WEB-01
+    on_success: [gain_foothold]
+  - order: 2
+    name: Install a web shell
+    technique_id: T1505.003
+    tactic: persistence
+    layer: 7
+    protocol: tcp
+    port: 443
+    target_code: WEB-01
+    preconditions: [gain_foothold]
+    on_success: [obtain_credentials]
+    notes: The web shell reads the backend credentials from the application config.
+  - order: 3
+    name: Exploit the application server from the web server
+    technique_id: T1190
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 8080
+    target_code: APP-01
+    preconditions: [gain_foothold]
+    on_success: [gain_foothold]
+  - order: 4
+    name: Log in to the database with the application's credentials
+    technique_id: T1078
+    tactic: initial_access
+    layer: 7
+    protocol: tcp
+    port: 5432
+    service: database
+    target_selector: next_hop_toward_goal
+    preconditions: [obtain_credentials]
+    on_success: [gain_foothold]
+  - order: 5
+    name: Dump customer records
+    technique_id: T1005
+    tactic: collection
+    layer: 7
+    protocol: any
+    target_selector: current_position
+    preconditions: [gain_foothold]
+    on_success: [read_data]
