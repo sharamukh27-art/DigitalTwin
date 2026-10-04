@@ -35,3 +35,6 @@ yarn.lock
 # Personal Notes
 notes.txt
 todo.txt
+__pycache__/
+chroma_data/
+*.pyc

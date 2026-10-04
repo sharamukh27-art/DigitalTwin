@@ -874,3 +874,93 @@ section { position: relative; padding: 120px 0; z-index: 1; }
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ============================================
+   ELEGANCE LAYER — ambient + motion polish
+   ============================================ */
+
+/* Animated ambient gradient behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(600px circle at 15% 20%, rgba(0, 229, 255, 0.05), transparent 60%),
+    radial-gradient(700px circle at 85% 75%, rgba(0, 229, 255, 0.04), transparent 60%),
+    radial-gradient(500px circle at 60% 10%, rgba(255, 176, 32, 0.03), transparent 60%);
+  animation: ambientDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes ambientDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-4%, 3%) scale(1.08); }
+}
+
+/* Floating orbs in hero */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  animation: orbFloat 9s ease-in-out infinite;
+}
+.orb-1 { width: 220px; height: 220px; top: 18%; left: 12%; background: rgba(0, 229, 255, 0.10); }
+.orb-2 { width: 160px; height: 160px; bottom: 20%; left: 40%; background: rgba(0, 229, 255, 0.07); animation-delay: 2.2s; }
+.orb-3 { width: 260px; height: 260px; top: 30%; right: 25%; background: rgba(255, 176, 32, 0.05); animation-delay: 4s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-26px) translateX(14px); }
+}
+
+/* Gradient shimmer on hero name */
+.title-name {
+  background: linear-gradient(100deg, #e7ecef 30%, #00e5ff 50%, #e7ecef 70%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% center; }
+}
+
+/* Button shine sweep */
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -80%;
+  width: 50%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s var(--ease-servo);
+}
+.btn:hover::after { left: 130%; }
+
+/* Card hover: soft signal glow */
+.metric-card:hover,
+.skill-card:hover,
+.contact-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.07);
+}
+.project-card { transition: border-color 0.3s, transform 0.3s var(--ease-servo), box-shadow 0.3s; }
+.project-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0, 229, 255, 0.08); }
+
+/* Section title underline grows when scrolled into view */
+.title-underline { transform: scaleX(0); transform-origin: left; transition: transform 0.8s var(--ease-servo) 0.15s; }
+.in-view .title-underline,
+section.in-view .title-underline { transform: scaleX(1); }
+
+/* Nav background deepens on scroll */
+.navbar.scrolled { background: rgba(8, 9, 11, 0.92); box-shadow: 0 1px 0 var(--border-signal); }
+
+/* Footer link hover glow */
+.footer-links a:hover { text-shadow: 0 0 10px var(--signal-glow); text-decoration: none; }
+
+/* Skill card icon subtle float on hover */
+.skill-card:hover .skill-icon { animation: iconBob 1.2s ease-in-out infinite; display: inline-block; }
+@keyframes iconBob { 50% { transform: translateY(-4px); } }

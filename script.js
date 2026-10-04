@@ -50,7 +50,28 @@ function initNavbar() {
       link.addEventListener('click', () => navMenu.classList.remove('active'))
     );
   }
+
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+  }
 }
+
+/* ---------- Section underline reveal ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('section');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  sections.forEach((s) => obs.observe(s));
+});
 
 /* ---------- Typing / role rotator ---------- */
 function initTypingEffect() {

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Cyber Twin – Dashboard</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#667085;--bd:#e3e6ea;--ac:#0e7c66;--rd:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0f14;--card:#131a22;--tx:#e6e8eb;--mu:#8b93a1;--bd:#232c38;--ac:#34d3a8;--rd:#f87171}}
+*{box-sizing:border-box;transition:border-color .2s,box-shadow .2s,background .2s,color .2s,transform .2s}
+body{margin:0;color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.45;font-size:14px;overflow-x:hidden;background:var(--bg)}
+
+/* animated background blobs */
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none;z-index:0}
+.b1{width:420px;height:420px;background:var(--ac);top:-120px;right:-80px;animation:drift1 14s ease-in-out infinite}
+.b2{width:380px;height:380px;background:#7c5cff;bottom:-140px;left:-100px;animation:drift2 18s ease-in-out infinite}
+.b3{width:300px;height:300px;background:#ff5c8a;top:40%;left:60%;opacity:.15;animation:drift3 22s ease-in-out infinite}
+@keyframes drift1{50%{transform:translate(-60px,50px) scale(1.15)}}
+@keyframes drift2{50%{transform:translate(70px,-40px) scale(1.1)}}
+@keyframes drift3{50%{transform:translate(-80px,-60px) scale(1.2)}}
+
+.wrap{max-width:1050px;margin:0 auto;padding:20px 16px;position:relative;z-index:1}
+h1{font-size:24px;margin:0 0 14px;letter-spacing:-.02em;background:linear-gradient(90deg,var(--tx) 20%,var(--ac) 60%,#7c5cff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:titleShift 6s linear infinite}
+@keyframes titleShift{to{background-position:200% center}}
+h2{font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px;animation:slideIn .4s ease both}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;background:color-mix(in srgb,var(--card) 80%,transparent);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.08);animation:fadeDown .5s ease}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+input,select,textarea{background:transparent;color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 9px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 20%,transparent)}
+textarea{width:100%;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 13px;cursor:pointer;font:inherit;margin:2px 4px 2px 0;transition:transform .15s,box-shadow .25s,filter .2s}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 20px color-mix(in srgb,var(--ac) 40%,transparent);filter:brightness(1.1)}
+button:active{transform:translateY(0) scale(.94)}
+button.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+button.alt:hover{border-color:var(--ac);color:var(--ac);box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 20%,transparent)}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{background:transparent;color:var(--mu);border:1px solid var(--bd);border-radius:999px;padding:7px 16px}
+.tabs button:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px);box-shadow:none}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac);animation:tabPulse 2.2s ease-in-out infinite}
+@keyframes tabPulse{50%{box-shadow:0 4px 22px color-mix(in srgb,var(--ac) 60%,transparent)}}
+
+#out{background:color-mix(in srgb,var(--card) 85%,transparent);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:16px;padding:16px;min-height:200px;box-shadow:0 10px 40px rgba(0,0,0,.08)}
+#out.fade{animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ok{color:var(--ac)}.bad{color:var(--rd)}.mu{color:var(--mu)}
+#hs{animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.err{color:var(--rd);white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:12px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.kpi{border:1px solid var(--bd);border-radius:12px;padding:12px;animation:pop .4s cubic-bezier(.34,1.56,.64,1) both;transition:transform .2s,border-color .2s,box-shadow .2s}
+.kpi:nth-child(2){animation-delay:.06s}.kpi:nth-child(3){animation-delay:.12s}.kpi:nth-child(4){animation-delay:.18s}.kpi:nth-child(5){animation-delay:.24s}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.kpi:hover{transform:translateY(-4px) scale(1.02);border-color:var(--ac);box-shadow:0 10px 22px rgba(0,0,0,.1)}
+.kpi b{display:block;font-size:20px;word-break:break-word;color:var(--ac)}.kpi span{color:var(--mu);font-size:12px}
+
+.scroll{overflow-x:auto;border:1px solid var(--bd);border-radius:12px;background:color-mix(in srgb,var(--card) 60%,transparent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bd);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--mu);background:color-mix(in srgb,var(--ac) 7%,transparent);border-bottom:1px solid var(--bd)}
+thead tr{animation:fadeDown .4s ease}
+tbody tr{animation:rowIn .35s ease both;transition:background .2s,transform .2s,box-shadow .2s;border-left:2px solid transparent}
+tbody tr:nth-child(1){animation-delay:.03s}tbody tr:nth-child(2){animation-delay:.07s}tbody tr:nth-child(3){animation-delay:.11s}
+tbody tr:nth-child(4){animation-delay:.15s}tbody tr:nth-child(n+5){animation-delay:.19s}
+@keyframes rowIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+tbody tr:nth-child(even){background:color-mix(in srgb,var(--tx) 2.5%,transparent)}
+tbody tr[data-i]{cursor:pointer}
+tbody tr[data-i]:hover{background:color-mix(in srgb,var(--ac) 10%,transparent);border-left-color:var(--ac);transform:translateX(3px)}
+tbody tr:last-child td{border-bottom:none}
+pre{overflow:auto;font-size:12px;max-height:300px}details{margin-top:8px;color:var(--mu)}
+
+svg text{fill:var(--tx);font-size:10px}
+svg circle{transition:r .2s,filter .2s;animation:nodePulse 3s ease-in-out infinite}
+svg circle:hover{r:13;filter:drop-shadow(0 0 6px var(--ac))}
+@keyframes nodePulse{50%{opacity:.7}}
+svg line{stroke-dasharray:5 5;animation:dashFlow 18s linear infinite}
+@keyframes dashFlow{to{stroke-dashoffset:-200}}
+
+/* loading spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-left:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.shimmerbar{height:4px;border-radius:2px;margin-top:12px;background:linear-gradient(90deg,transparent,var(--ac),transparent);background-size:200% 100%;animation:shimmer 1.1s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div class="wrap">
+  <h1>Digital Cyber Twin</h1>
+  <div class="bar">
+    <input id="base" value="http://127.0.0.1:8000" size="24" title="Backend address">
+    <span id="hs" class="mu">checking…</span>
+    <select id="net"></select>
+    <button class="alt" id="newnet">+ New network</button>
+    <button class="alt" id="refresh">Refresh</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="out">Loading…</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),
+esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const base=()=>$('#base').value.replace(/\/$/,'');
+async function api(p,method,body){
+  const r=await fetch(base()+'/api/v1'+p,{method:method||'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
+  const t=await r.text(); if(!r.ok)throw new Error(r.status+' '+p+'\n'+t.slice(0,400));
+  try{return JSON.parse(t)}catch{return t}
+}
+const arr=x=>Array.isArray(x)?x:(x&&typeof x==='object'&&Object.values(x).find(Array.isArray))||[];
+const idOf=o=>o.id??o._id??o.network_id??o.run_id??o.scenario_id??o.asset_id??o.control_id??o.remediation_id;
+const nameOf=o=>o.name??o.title??idOf(o);
+const cache={};
+function raw(x){return '<details><summary>Raw JSON</summary><pre>'+esc(JSON.stringify(x,null,2))+'</pre></details>'}
+function table(rows,id){
+  cache[id]=rows; if(!rows.length)return '<p class="mu">Nothing here yet.</p>';
+  const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(k=>rows.some(r=>r[k]!==null&&typeof r[k]!=='object')).slice(0,6);
+  return '<div class="scroll"><table id="'+id+'"><thead><tr>'+keys.map(k=>'<th>'+esc(k)+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map((r,i)=>'<tr data-i="'+i+'">'+keys.map(k=>'<td>'+esc(r[k]??'')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+}
+function countUp(el){
+  const target=parseFloat(el.textContent.replace(/[^0-9.-]/g,''));
+  if(isNaN(target))return;
+  const dur=700,t0=performance.now();
+  (function tick(t){const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=(el.textContent.replace(/[0-9.-]+/,'')+String(Math.round(e*target*1000)/1000)).trim();
+    if(p<1)requestAnimationFrame(tick)})(t0);
+}
+function kv(o){
+  if(!o||typeof o!=='object')return '<p>'+esc(o)+'</p>';
+  const s=Object.entries(o).filter(([k,v])=>v===null||typeof v!=='object');
+  const short=s.filter(([k,v])=>String(v).length<=60), long=s.filter(([k,v])=>String(v).length>60);
+  const h='<div class="kpis">'+short.map(([k,v])=>'<div class="kpi"><b data-n="'+esc(typeof v==='number'?v:'')+'">'+esc(typeof v==='number'?+v.toFixed(3):v)+'</b><span>'+esc(k)+'</span></div>').join('')+'</div>'+
+    long.map(([k,v])=>'<p><b>'+esc(k)+':</b> '+esc(v)+'</p>').join('');
+  return h;
+}
+function animateKpis(){document.querySelectorAll('.kpi b').forEach(b=>{if(!isNaN(parseFloat(b.textContent)))countUp(b)})}
+let nid=null,tab='overview';
+const out=$('#out'),show=h=>{out.innerHTML=h;out.classList.remove('fade');void out.offsetWidth;out.classList.add('fade');animateKpis()};
+const loading=()=>out.innerHTML='<p class="mu">Loading…<span class="spinner"></span></p><div class="shimmerbar"></div>';
+async function post(path,body,el){
+  el.innerHTML='<span class="spinner"></span> Working…';
+  try{const x=await api(path,'POST',body||{});el.innerHTML=kv(x)+raw(x);animateKpis()}
+  catch(e){el.innerHTML='<div class="err">'+esc(e.message)+'</div>'}
+}
+async function loadRun(r){
+  const id=idOf(r),el=$('#res'); el.innerHTML='<span class="spinner"></span> Loading run…';
+  try{
+    const [f,k,ev]=await Promise.all([api('/runs/'+id+'/findings'),api('/runs/'+id+'/risk'),api('/runs/'+id+'/events')]);
+    el.innerHTML='<h2>Run '+esc(id)+' – risk</h2>'+kv(k)+'<h2>Findings</h2>'+table(arr(f),'tf')+'<h2>Events</h2>'+table(arr(ev),'te')+
+      '<div><button id="ex">Explain (AI)</button><button class="alt" id="rem">Generate remediations</button></div><div id="r2"></div>'+raw({risk:k,findings:f,events:ev});
+    $('#ex').onclick=()=>post('/runs/'+id+'/explain',{},$('#r2'));
+    $('#rem').onclick=()=>post('/runs/'+id+'/remediations',{},$('#r2'));
+    animateKpis();
+  }catch(e){el.innerHTML='<div class="err">'+esc(e.message)+'</div>'}
+}
+const H={
+  ts:r=>{$('#body').value=JSON.stringify({scenario_id:idOf(r)})},
+  trn:loadRun
+};
+out.onclick=e=>{const tr=e.target.closest('tr[data-i]');if(!tr)return;const t=tr.closest('table').id;H[t]&&H[t](cache[t][+tr.dataset.i])};
+
+const V={
+  async overview(){
+    const [p,c]=await Promise.all([api('/networks/'+nid+'/posture'),api('/networks/'+nid+'/coverage')]);
+    show('<h2>Security posture</h2>'+kv(p)+raw(p)+'<h2>Control coverage</h2>'+kv(c)+raw(c));
+  },
+  async assets(){
+    const [a,l]=await Promise.all([api('/networks/'+nid+'/assets'),api('/networks/'+nid+'/links')]);
+    show('<h2>Assets</h2>'+table(arr(a),'ta')+'<h2>Links</h2>'+table(arr(l),'tl')+raw({assets:a,links:l}));
+  },
+  async graph(){
+    const g=await api('/networks/'+nid+'/graph');
+    const nodes=(g.nodes||[]).map(n=>typeof n==='object'?n:{id:n}), edges=g.edges||g.links||[];
+    // layout: cluster by type into concentric rings
+    const types=[...new Set(nodes.map(n=>n.type??n.asset_type??n.kind??'asset'))];
+    const colorOf={0:'#34d3a8',1:'#7c5cff',2:'#ff5c8a',3:'#ffb020',4:'#38bdf8',5:'#f472b6'};
+    const tIdx={};types.forEach((t,i)=>tIdx[t]=i);
+    const byType={};nodes.forEach(n=>{const t=n.type??n.asset_type??n.kind??'asset';(byType[t]=byType[t]||[]).push(n)});
+    const pos={},cx=310,cy=215;
+    types.forEach((t,ti)=>{
+      const group=byType[t];
+      const ring=120+ti*70;
+      group.forEach((n,i)=>{const a=2*Math.PI*i/group.length+ti*0.5;pos[idOf(n)]={x:cx+ring*Math.cos(a),y:cy+ring*Math.sin(a)*0.8}});
+    });
+    let s='<svg viewBox="0 0 620 430" style="width:100%;max-height:480px">';
+    s+='<defs><radialGradient id="ng"><stop offset="0%" stop-color="#34d3a8" stop-opacity=".5"/><stop offset="100%" stop-color="#34d3a8" stop-opacity="0"/></radialGradient>';
+    s+='<filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    // edges: soft curved animated
+    edges.forEach((e,i)=>{
+      const a=pos[e.source??e.from??e.src],b=pos[e.target??e.to??e.dst];if(!a||!b)return;
+      const mx=(a.x+b.x)/2+((a.y-b.y)*0.15),my=(a.y+b.y)/2+((b.x-a.x)*0.15);
+      s+='<path d="M'+a.x+','+a.y+' Q'+mx+','+my+' '+b.x+','+b.y+'" fill="none" stroke="var(--mu)" stroke-opacity=".35" stroke-width="1.2" stroke-dasharray="4 5" style="animation:dashFlow '+(14+i%6*2)+'s linear infinite"/>';
+    });
+    nodes.forEach((n,i)=>{
+      const p=pos[idOf(n)];if(!p)return;
+      const t=n.type??n.asset_type??n.kind??'asset',c=colorOf[tIdx[t]%6];
+      s+='<g style="animation:pop .5s '+(i*0.05)+'s cubic-bezier(.34,1.56,.64,1) both">';
+      s+='<circle cx="'+p.x+'" cy="'+p.y+'" r="16" fill="'+c+'" opacity=".12"><animate attributeName="r" values="14;20;14" dur="3s" begin="'+(i*0.2)+'s" repeatCount="indefinite"/></circle>';
+      s+='<circle cx="'+p.x+'" cy="'+p.y+'" r="7" fill="'+c+'" filter="url(#glow)"/>';
+      s+='<text x="'+p.x+'" y="'+(p.y-14)+'" text-anchor="middle">'+esc(String(nameOf(n)).slice(0,16))+'</text></g>';
+    });
+    s+='</svg>';
+    const legend=types.map((t,i)=>'<span style="margin-right:14px"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+colorOf[i%6]+';margin-right:5px"></i>'+esc(t)+'</span>').join('');
+    show('<h2>Network graph ('+nodes.length+' nodes, '+edges.length+' links)</h2><p class="mu">'+legend+'</p>'+(nodes.length?s:'<p class="mu">No nodes yet. Add assets first.</p>')+raw(g));
+  },
+  async sim(){
+    const s=arr(await api('/scenarios'));
+    show('<h2>Scenarios</h2><p class="mu">Click a scenario to select it.</p>'+table(s,'ts')+
+      '<h2>Run</h2><textarea id="body" rows="3">'+esc(JSON.stringify({scenario_id:s[0]?idOf(s[0]):''}))+'</textarea>'+
+      '<div><button id="go">Simulate</button><button class="alt" id="goall">Simulate all</button></div><div id="sres"></div>');
+    $('#go').onclick=()=>{let b;try{b=JSON.parse($('#body').value)}catch{return $('#sres').innerHTML='<div class="err">Body is not valid JSON</div>'}post('/networks/'+nid+'/simulate',b,$('#sres'))};
+    $('#goall').onclick=()=>post('/networks/'+nid+'/simulate-all',{},$('#sres'));
+  },
+  async runs(){
+    const r=arr(await api('/networks/'+nid+'/runs'));
+    show('<h2>Simulation runs</h2><p class="mu">Click a run to see findings, risk and events.</p>'+table(r,'trn')+'<div id="res"></div>');
+  },
+  async fix(){
+    const [r,a]=await Promise.all([api('/networks/'+nid+'/remediations'),api('/networks/'+nid+'/audit-log')]);
+    show('<h2>Remediations</h2>'+table(arr(r),'tm')+'<h2>Audit log</h2>'+table(arr(a),'tau')+raw({remediations:r,audit:a}));
+  }
+};
+const TABS={overview:'Overview',assets:'Assets & links',graph:'Graph',sim:'Simulate',runs:'Runs',fix:'Remediation'};
+$('#tabs').innerHTML=Object.entries(TABS).map(([k,v])=>'<button data-t="'+k+'">'+v+'</button>').join('');
+async function go(){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  if(!nid){show('<p class="mu">No network yet. Click "+ New network", or import one in the backend docs page.</p>');return}
+  loading();
+  try{await V[tab]()}catch(e){show('<div class="err">'+esc(e.message)+'</div>')}
+}
+$('#tabs').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;go()}};
+$('#net').onchange=()=>{nid=$('#net').value||null;go()};
+$('#refresh').onclick=init;
+$('#base').onchange=init;
+$('#newnet').onclick=async()=>{
+  const n=prompt('Network name');if(!n)return;
+  try{await api('/networks','POST',{name:n});await init()}catch(e){show('<div class="err">'+esc(e.message)+'</div>')}
+};
+async function init(){
+  try{await api('/health');$('#hs').textContent='● connected';$('#hs').className='ok'}
+  catch(e){$('#hs').textContent='● cannot reach backend';$('#hs').className='bad';show('<div class="err">Could not reach '+esc(base())+'\nIs uvicorn running? If it is, the backend may need CORS enabled.\n'+esc(e.message)+'</div>');return}
+  try{
+    const n=arr(await api('/networks')),s=$('#net'),keep=s.value;
+    s.innerHTML=n.map(x=>'<option value="'+esc(idOf(x))+'">'+esc(nameOf(x))+'</option>').join('');
+    if(keep&&[...s.options].some(o=>o.value===keep))s.value=keep;
+    nid=s.value||null;
+  }catch(e){show('<div class="err">'+esc(e.message)+'</div>');return}
+  go();
+}
+init();
+</script>
+</body>
+</html>
